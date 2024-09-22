@@ -67,6 +67,9 @@ index_generator:
 # Category & Tag
 default_category: uncategorized
 category_map:
+  杂谈: talk
+  文章: article
+  resume: resume
 tag_map:
 
 # Metadata elements
