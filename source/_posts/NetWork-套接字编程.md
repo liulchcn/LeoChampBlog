@@ -1,6 +1,6 @@
 ---
-title: MIT6.S081_V2.0
-date: 2024-10-31 23:54:33
+title: NetWork 套接字编程
+date: 2024-11-01 07:23:39
 tags:
 layout: false
 ---
@@ -12,7 +12,7 @@ layout: false
 <head>
 <meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
 
-<style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
+<link href='https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic&subset=latin,cyrillic-ext,cyrillic,latin-ext' rel='stylesheet' type='text/css' /><style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
 .mac-os-11 { --title-bar-height:28px; }
 html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
 h1, h2, h3, h4, h5 { white-space: pre-wrap; }
@@ -214,311 +214,605 @@ mark .md-meta { color: rgb(0, 0, 0); }
 mjx-container { break-inside: avoid; }
 
 
+/* meyer reset -- http://meyerweb.com/eric/tools/css/reset/ , v2.0 | 20110126 | License: none (public domain) */
+
+@include-when-export url(https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic&subset=latin,cyrillic-ext,cyrillic,latin-ext);
+
+/* =========== */
+
+/* pt-serif-regular - latin */
+/* pt-serif-italic - latin */
+/* pt-serif-700 - latin */
+/* pt-serif-700italic - latin */
+:root {
+    --active-file-bg-color: #dadada;
+    --active-file-bg-color: rgba(32, 43, 51, 0.63);
+    --active-file-text-color: white;
+    --bg-color: #f3f2ee;
+    --text-color: #1f0909;
+    --control-text-color: #444;
+    --rawblock-edit-panel-bd: #e5e5e5;
+
+​    --select-text-bg-color: rgba(32, 43, 51, 0.63);
+  --select-text-font-color: white;
+}
+
+pre {
+    --select-text-bg-color: #36284e;
+    --select-text-font-color: #fff;
+}
+
 html {
-    font-size: 19px;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
 }
 
 html, body {
-    margin: auto;
-    background: #fefefe;
-    -webkit-font-smoothing: antialiased;
-}
-body {
-    font-family: "Vollkorn", Palatino, Times;
-    color: #333;
-    line-height: 1.4;
-    text-align: justify;
+    background-color: #f3f2ee;
+    font-family: "PT Serif", 'Times New Roman', Times, serif;
+    color: #1f0909;
+    line-height: 1.5em;
 }
 
+/*#write {
+    overflow-x: auto;
+    max-width: initial;
+    padding-left: calc(50% - 17em);
+    padding-right: calc(50% - 17em);
+}
+
+@media (max-width: 36em) {
+    #write {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+}*/
+
 #write {
-    max-width: 960px;
-    margin: 0 auto;
-    margin-bottom: 2em;
-    line-height: 1.53;
-    padding-top: 40px;
+    max-width: 40em;
 }
 
 @media only screen and (min-width: 1400px) {
     #write {
-        max-width: 1100px;
+            max-width: 914px;
     }
 }
 
-@media print {
-    html {
-        font-size: 13px;
-    }
+ol li {
+    list-style-type: decimal;
+    list-style-position: outside;
+}
+ul li {
+    list-style-type: disc;
+    list-style-position: outside;
 }
 
-/* Typography
--------------------------------------------------------- */
-
-#write>h1:first-child,
-h1 {
-    margin-top: 1.6em;
-    font-weight: normal;
-}
-
-h1 {
-    font-size:3em;
-}
-
-h2 {
-    margin-top:2em;
-    font-weight: normal;
-}
-
-h3 {
-    font-weight: normal;
-    font-style: italic;
-    margin-top: 3em;
-}
-
-h1, 
-h2, 
-h3{
-    text-align: center;
-}
-
-h2:after{
-    border-bottom: 1px solid #2f2f2f;
-    content: '';
-    width: 100px;
-    display: block;
-    margin: 0 auto;
-    height: 1px;
-}
-
-h1+h2, h2+h3 {
-    margin-top: 0.83em;
-}
-
-p,
-.mathjax-block {
-    margin-top: 0;
-    -webkit-hypens: auto;
-    -moz-hypens: auto;
-    hyphens: auto;
-}
+ol,
 ul {
-    list-style: square;
-    padding-left: 1.2em;
-}
-ol {
-    padding-left: 1.2em;
+    list-style: none;
 }
 
-@media print {
-    ol {
-        padding-left: 40px;
-    }
+blockquote,
+q {
+    quotes: none;
 }
-
-blockquote {
-    margin-left: 1em;
-    padding-left: 1em;
-    border-left: 1px solid #ddd;
-}
-code,
-pre {
-    font-family: "Consolas", "Menlo", "Monaco", monospace, serif;
-    font-size: .9em;
-    background: white;
-}
-.md-fences{
-    margin-left: 1em;
-    padding-left: 1em;
-    border: 1px solid #ddd;
-    padding-bottom: 8px;
-    padding-top: 6px;
-    margin-bottom: 1.5em;
-}
-
-a {
-    color: #2484c1;
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
-}
-a img {
-    border: none;
-}
-h1 a,
-h1 a:hover {
-    color: #333;
-    text-decoration: none;
-}
-hr {
-    color: #ddd;
-    height: 1px;
-    margin: 2em 0;
-    border-top: solid 1px #ddd;
-    border-bottom: none;
-    border-left: 0;
-    border-right: 0;
-}
-.ty-table-edit {
-    background: #ededed;
-    padding-top: 4px;
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: '';
+    content: none;
 }
 table {
-    margin-bottom: 1.333333rem
+    border-collapse: collapse;
+    border-spacing: 0;
 }
-table th,
-table td {
-    padding: 8px;
-    line-height: 1.333333rem;
-    vertical-align: top;
-    border-top: 1px solid #ddd
+/* styles */
+
+/* ====== */
+
+/* headings */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: bold;
 }
-table th {
-    font-weight: bold
+h1 {
+    font-size: 1.875em;
+    /*30 / 16*/
+    line-height: 1.6em;
+    /* 48 / 30*/
+    margin-top: 2em;
 }
-table thead th {
-    vertical-align: bottom
+h2,
+h3 {
+    font-size: 1.3125em;
+    /*21 / 16*/
+    line-height: 1.15;
+    /*24 / 21*/
+    margin-top: 2.285714em;
+    /*48 / 21*/
+    margin-bottom: 1.15em;
+    /*24 / 21*/
 }
-table caption+thead tr:first-child th,
-table caption+thead tr:first-child td,
-table colgroup+thead tr:first-child th,
-table colgroup+thead tr:first-child td,
-table thead:first-child tr:first-child th,
-table thead:first-child tr:first-child td {
-    border-top: 0
+h3 {
+    font-weight: normal;
 }
-table tbody+tbody {
-    border-top: 2px solid #ddd
+h4 {
+    font-size: 1.125em;
+    /*18 / 16*/
+    margin-top: 2.67em;
+    /*48 / 18*/
+}
+h5,
+h6 {
+    font-size: 1em;
+    /*16*/
+}
+h1 {
+    border-bottom: 1px solid;
+    margin-bottom: 1.875em;
+    padding-bottom: 0.8125em;
+}
+/* links */
+
+a {
+    text-decoration: none;
+    color: #065588;
+}
+a:hover,
+a:active {
+    text-decoration: underline;
+}
+/* block spacing */
+
+p,
+blockquote,
+.md-fences {
+    margin-bottom: 1.5em;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-bottom: 1.5em;
+}
+/* blockquote */
+
+blockquote {
+    font-style: italic;
+    border-left: 5px solid;
+    margin-left: 2em;
+    padding-left: 1em;
+}
+/* lists */
+
+ul,
+ol {
+    margin: 0 0 1.5em 1.5em;
+}
+/* tables */
+.md-meta,.md-before, .md-after {
+    color:#999;
 }
 
+table {
+    margin-bottom: 1.5em;
+    /*24 / 16*/
+    font-size: 1em;
+    /* width: 100%; */
+}
+thead th,
+tfoot th {
+    padding: .25em .25em .25em .4em;
+    text-transform: uppercase;
+}
+th {
+    text-align: left;
+}
+td {
+    vertical-align: top;
+    padding: .25em .25em .25em .4em;
+}
+
+code,
+.md-fences {
+    background-color: #dadada;
+}
+
+code {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.md-fences {
+    margin-left: 2em;
+    margin-bottom: 3em;
+    padding-left: 1ch;
+    padding-right: 1ch;
+}
+
+pre,
+code,
+tt {
+    font-size: .875em;
+    line-height: 1.714285em;
+}
+/* some fixes */
+
+h1 {
+    line-height: 1.3em;
+    font-weight: normal;
+    margin-bottom: 0.5em;
+}
+
+p + ul,
+p + ol{
+    margin-top: .5em;
+}
+
+h3 + ul,
+h4 + ul,
+h5 + ul,
+h6 + ul,
+h3 + ol,
+h4 + ol,
+h5 + ol,
+h6 + ol {
+    margin-top: .5em;
+}
+
+li > ul,
+li > ol {
+    margin-top: inherit;
+    margin-bottom: 0;
+}
+
+li ol>li {
+    list-style-type: lower-alpha;
+}
+
+li li ol>li{
+    list-style-type: lower-roman;
+}
+
+h2,
+h3 {
+    margin-bottom: .75em;
+}
+hr {
+    border-top: none;
+    border-right: none;
+    border-bottom: 1px solid;
+    border-left: none;
+}
+h1 {
+    border-color: #c5c5c5;
+}
+blockquote {
+    border-color: #bababa;
+    color: #656565;
+}
+
+blockquote ul,
+blockquote ol {
+    margin-left:0;
+}
+
+.ty-table-edit {
+    background-color: transparent;
+}
+thead {
+    background-color: #dadada;
+}
+tr:nth-child(even) {
+    background: #e8e7e7;
+}
+hr {
+    border-color: #c5c5c5;
+}
 .task-list{
-    padding:0;
+    padding-left: 1rem;
 }
 
 .md-task-list-item {
-    padding-left: 1.6rem;
+    padding-left: 1.5rem;
+    list-style-type: none;
 }
 
 .md-task-list-item > input:before {
     content: '\221A';
     display: inline-block;
-    width: 1.33333333rem;
+    width: 1.25rem;
     height: 1.6rem;
     vertical-align: middle;
     text-align: center;
     color: #ddd;
-    background-color: #fefefe;
+    background-color: #F3F2EE;
 }
 
 .md-task-list-item > input:checked:before,
 .md-task-list-item > input[checked]:before{
     color: inherit;
 }
-.md-tag {
-    color: inherit;
-    font: inherit;
-}
+
 #write pre.md-meta-block {
-    min-height: 35px;
-    padding: 0.5em 1em;
-}
-#write pre.md-meta-block {
-    white-space: pre;
-    background: #f8f8f8;
+    min-height: 1.875rem;
+    color: #555;
     border: 0px;
-    color: #999;
-    
-    width: 100vw;
-    max-width: calc(100% + 60px);
-    margin-left: -30px;
-    border-left: 30px #f8f8f8 solid;
-    border-right: 30px #f8f8f8 solid;
-
-​    margin-bottom: 2em;
-​    margin-top: -1.3333333333333rem;
-​    padding-top: 26px;
-​    padding-bottom: 10px;
-​    line-height: 1.8em;
-​    font-size: 0.9em;
-​    font-size: 0.76em;
-​    padding-left: 0;
-}
-.md-img-error.md-image>.md-meta{
-​    vertical-align: bottom;
-}
-#write>h5.md-focus:before {
-​    top: 2px;
+    background: transparent;
+    margin-top: -4px;
+    margin-left: 1em;
+    margin-top: 1em;
 }
 
-.md-toc {
-    margin-top: 40px;
+.md-image>.md-meta {
+    color: #9B5146;
 }
 
-.md-toc-content {
-    padding-bottom: 20px;
+.md-image>.md-meta{
+    font-family: Menlo, 'Ubuntu Mono', Consolas, 'Courier New', 'Microsoft Yahei', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', serif;
+}
+
+
+#write>h3.md-focus:before{
+    left: -1.5rem;
+    color:#999;
+    border-color:#999;
+}
+#write>h4.md-focus:before{
+    left: -1.5rem;
+    top: .25rem;
+    color:#999;
+    border-color:#999;
+}
+#write>h5.md-focus:before{
+    left: -1.5rem;
+    top: .0.3125rem;
+    color:#999;
+    border-color:#999;
+}
+#write>h6.md-focus:before{
+    left: -1.5rem;
+    top: 0.3125rem;
+    color:#999;
+    border-color:#999;
+}
+
+.md-toc:focus .md-toc-content{
+    margin-top: 19px;
+}
+
+.md-toc-content:empty:before{
+    color: #065588;
+}
+.md-toc-item {
+    color: #065588;
+}
+#write div.md-toc-tooltip {
+    background-color: #f3f2ee;
+}
+
+#typora-sidebar {
+    background-color: #f3f2ee;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.375);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.375);
+}
+
+.pin-outline #typora-sidebar {
+    background: inherit;
+    box-shadow: none;
+    border-right: 1px dashed;
+}
+
+.pin-outline #typora-sidebar:hover .outline-title-wrapper {
+    border-left:1px dashed;
+}
+
+.outline-item:hover {
+  background-color: #dadada;
+  border-left: 28px solid #dadada;
+  border-right: 18px solid #dadada;
+}
+
+.typora-node .outline-item:hover {
+    border-right: 28px solid #dadada;
 }
 
 .outline-expander:before {
-    color: inherit;
-    font-size: 14px;
-    top: auto;
-    content: "\f0da";
-    font-family: FontAwesome;
+  content: "\f0da";
+  font-family: FontAwesome;
+  font-size:14px;
+  top: 1px;
 }
 
 .outline-expander:hover:before,
 .outline-item-open>.outline-item>.outline-expander:before {
-    content: "\f0d7";
+  content: "\f0d7";
 }
 
-/** source code mode */
-#typora-source {
-    font-family: Courier, monospace;
-    color: #6A6A6A;
+.modal-content {
+    background-color: #f3f2ee;
 }
 
-.html-for-mac #typora-sidebar {
-    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+.auto-suggest-container ul li {
+    list-style-type: none;
 }
 
-.cm-s-typora-default .cm-header, 
-.cm-s-typora-default .cm-property,
-.CodeMirror.cm-s-typora-default div.CodeMirror-cursor {
-    color: #428bca;
+/** UI for electron */
+
+.megamenu-menu,
+#top-titlebar, #top-titlebar *,
+.megamenu-content {
+    background: #f3f2ee;
+    color: #1f0909;
 }
 
-.cm-s-typora-default .cm-atom, .cm-s-typora-default .cm-number {
-    color: #777777;
+.megamenu-menu-header {
+    border-bottom: 1px dashed #202B33;
 }
 
-.typora-node .file-list-item-parent-loc, 
-.typora-node .file-list-item-time, 
-.typora-node .file-list-item-summary {
-    font-family: arial, sans-serif;
+.megamenu-menu {
+    box-shadow: none;
+    border-right: 1px dashed;
+}
+
+header, .context-menu, .megamenu-content, footer {
+    font-family: "PT Serif", 'Times New Roman', Times, serif;
+    color: #1f0909;
+}
+
+#megamenu-back-btn {
+    color: #1f0909;
+    border-color: #1f0909;
+}
+
+.megamenu-menu-header #megamenu-menu-header-title:before {
+    color: #1f0909;
+}
+
+.megamenu-menu-list li a:hover, .megamenu-menu-list li a.active {
+    color: inherit;
+    background-color: #e8e7df;
+}
+
+.long-btn:hover {
+    background-color: #e8e7df;
+}
+
+#recent-file-panel tbody tr:nth-child(2n-1) {
+    background-color: transparent !important;
+}
+
+.megamenu-menu-panel tbody tr:hover td:nth-child(2) {
+    color: inherit;
+}
+
+.megamenu-menu-panel .btn {
+    background-color: #D2D1D1;
+}
+
+.btn-default {
+    background-color: transparent;
+}
+
+.typora-sourceview-on #toggle-sourceview-btn,
+.ty-show-word-count #footer-word-count {
+    background: #c7c5c5;
+}
+
+#typora-quick-open {
+    background-color: inherit;
+}
+
+.md-diagram-panel {
+    margin-top: 8px;
+}
+
+.file-list-item-file-name {
+    font-weight: initial;
+}
+
+.file-list-item-summary {
+    opacity: 1;
+}
+
+.file-list-item {
+    color: #777;
+}
+
+.file-list-item.active {
+    background-color: inherit;
+    color: black;
+}
+
+.ty-side-sort-btn.active {
+    background-color: inherit;
+}
+
+.file-list-item.active .file-list-item-file-name  {
+    font-weight: bold;
+}
+
+.file-list-item{
+    opacity:1 !important;
+}
+
+.file-library-node.active>.file-node-background{
+    background-color: rgba(32, 43, 51, 0.63);
+    background-color: var(--active-file-bg-color);
+}
+
+.file-tree-node.active>.file-node-content{
+    color: white;
+    color: var(--active-file-text-color);
 }
 
 .md-task-list-item>input {
-    margin-left: -1.3em;
+    margin-left: -1.7em;
     margin-top: calc(1rem - 12px);
+    -webkit-appearance: button;
 }
 
-.md-mathjax-midline {
-    background: #fafafa;
+input {
+    border: 1px solid #aaa;
 }
 
-.md-fences .code-tooltip {
-    bottom: -2em !important;
+.megamenu-menu-header #megamenu-menu-header-title,
+.megamenu-menu-header:hover, 
+.megamenu-menu-header:focus {
+    color: inherit;
 }
 
 .dropdown-menu .divider {
     border-color: #e5e5e5;
+    opacity: 1;
+}
+
+/* https://github.com/typora/typora-issues/issues/2046 */
+.os-windows-7 strong,
+.os-windows-7 strong  {
+    font-weight: 760;
+}
+
+.ty-preferences .btn-default {
+    background: transparent;
+}
+
+.ty-preferences .window-header {
+    border-bottom: 1px dashed #202B33;
+    box-shadow: none;
+}
+
+#sidebar-loading-template, #sidebar-loading-template.file-list-item {
+    color: #777;
+}
+
+.searchpanel-search-option-btn.active {
+    background: #777;
+    color: white;
+}
+
+.export-detail, .light .export-detail, 
+.light .export-item.active, 
+.light .export-items-list-control {
+    background: #e0e0e0;
+    border-radius: 2px;
+    font-weight: 700;
+    color: inherit
 }
 
 
-</style><title>1</title>
+</style><title>Network  套接字编程</title>
 </head>
 <body class='typora-export os-windows'><div class='typora-export-content'>
-<div id='write'  class=''><p><span>应用进程之间远程的传输报文，必须借助于传输层提供的服务。传输层提供的服务在 TCP/IP 协议上提供 socket api 的服务，应用进程调用一系列 socket api 应用程序接口创建 socket，使用 socket，关闭 socket。所以对于应用层不需要考虑报文的传输。</span></p><p><span>所以我们将要了解应用层怎么使用 socket，从建立到关闭的过程。</span></p><p>&nbsp;</p><h1 id='1-前置代码'><span>1. 前置代码</span></h1><h2 id='11-ip-与-port-捆绑关系数据结构'><span>1.1. IP 与 port 捆绑关系数据结构</span></h2><p><img src="https://cdn.nlark.com/yuque/0/2024/jpeg/40540759/1714913271362-0aa0db1a-d117-4ed1-bae8-a3b430df4657.jpeg" referrerpolicy="no-referrer" alt="img"></p><h2 id='12-域名和-ip-地址的数据结构'><span>1.2. 域名和 IP 地址的数据结构</span></h2><p><img src="https://cdn.nlark.com/yuque/0/2024/jpeg/40540759/1714914055166-a116bd1b-8d52-4fae-83c4-c57adfb50552.jpeg" referrerpolicy="no-referrer" alt="img"></p><p><span>做域名解析的时候调用作为一个返回值，最后把这个结构体的 id 地址放到上面的 socket_addr 的 ip 地址中。</span></p><h1 id='2-udp-套接字'><span>2. UDP 套接字</span></h1><p><span>使用 UDP 套接字的两个通信进程之间进行交互，在发送进程能够将数据分组推出套接字之前，当使用 UDP 时，必须先将</span><strong><span>目的地址</span></strong><span>附在该分组之上。在该分组传过发送方的套接字之后，因特网将使用该目的地址通过因特网为该分组选路到接收进程的套接字。</span></p><p>&nbsp;</p><p><span>目的地址由</span><strong><span>目的主机的 IP 地址和目的地套接字的端口号</span></strong><span>组成。</span></p><p><span>一台主机会运行许多网络应用进程，每个应用进程具有至少一个套接字，每生成一个套接字，就会为它分配一个</span><strong><span>端口号</span></strong><span>。</span></p><p>&nbsp;</p><p><img src="https://cdn.nlark.com/yuque/0/2024/jpeg/40540759/1714910319230-fa763446-96b1-456b-a293-f7672b035a14.jpeg" referrerpolicy="no-referrer" alt="img"></p><p>&nbsp;</p><h1 id='3-tcp-套接字编程'><span>3. TCP 套接字编程</span></h1><p><span>与 UDP 不同，TCP 是一个</span><strong><span>面向连接</span></strong><span>的协议。这意味着客户和服务器能够开始互相发送数据前，他们先要握手和创建一个 </span><strong><span>TCP 连接</span></strong><span>。</span></p><p><span>TCP 连接的两端分别时客户端的套接字和服务端的套接字。使用 TCP 传输数据，只需经过其套接字将数据丢进 TCP 连接，不用再附上一个目的地址。</span></p><p>&nbsp;</p><p><img src="https://cdn.nlark.com/yuque/0/2024/png/40540759/1714912170694-2e9bab41-ac06-48d7-bb05-c17466c595ec.png" referrerpolicy="no-referrer" alt="img"></p><ol><li><p><span>服务器运行。</span></p></li><li><p><span>创建 welcome socket ，return 一个整数 。</span></p></li><li><p><span>整数，socket 与本地 IP 端口捆绑。调用 socket api 函数 </span><code>accept</code><span>，接收来自于这个 socket，来自于远端的另外以下进程跟他的握手关系，来自于其他人与它建立 tcp 连接</span></p></li><li><p><span>客户端与服务器连接，创建 socket，隐式捆绑。</span></p></li><li><p><span>调用</span><code>connect</code><span>函数。</span></p></li></ol></div></div>
+<div id='write'  class=''><h1 id='network-套接字编程'><span>Network ：套接字编程</span></h1><p>&nbsp;</p><p><span>应用进程之间远程的传输报文，必须借助于传输层提供的服务。传输层提供的服务在 TCP/IP 协议上提供 socket api 的服务，应用进程调用一系列 socket api 应用程序接口创建 socket，使用 socket，关闭 socket。所以对于应用层不需要考虑报文的传输。</span></p><p><span>所以我们将要了解应用层怎么使用 socket，从建立到关闭的过程。</span></p><p>&nbsp;</p><h1 id='1-前置代码'><span>1. 前置代码</span></h1><h2 id='11-ip-与-port-捆绑关系数据结构'><span>1.1. IP 与 port 捆绑关系数据结构</span></h2><p><img src="https://cdn.nlark.com/yuque/0/2024/jpeg/40540759/1714913271362-0aa0db1a-d117-4ed1-bae8-a3b430df4657.jpeg" alt="img" style="zoom: 50%;" /></p><h2 id='12-域名和-ip-地址的数据结构'><span>1.2. 域名和 IP 地址的数据结构</span></h2><p><img src="https://cdn.nlark.com/yuque/0/2024/jpeg/40540759/1714914055166-a116bd1b-8d52-4fae-83c4-c57adfb50552.jpeg" alt="img" style="zoom: 50%;" /></p><p><span>做域名解析的时候调用作为一个返回值，最后把这个结构体的 id 地址放到上面的 socket_addr 的 ip 地址中。</span></p><h1 id='2-udp-套接字'><span>2. UDP 套接字</span></h1><p><span>使用 UDP 套接字的两个通信进程之间进行交互，在发送进程能够将数据分组推出套接字之前，当使用 UDP 时，必须先将</span><strong><span>目的地址</span></strong><span>附在该分组之上。在该分组传过发送方的套接字之后，因特网将使用该目的地址通过因特网为该分组选路到接收进程的套接字。</span></p><p>&nbsp;</p><p><span>目的地址由</span><strong><span>目的主机的 IP 地址和目的地套接字的端口号</span></strong><span>组成。</span></p><p><span>一台主机会运行许多网络应用进程，每个应用进程具有至少一个套接字，每生成一个套接字，就会为它分配一个</span><strong><span>端口号</span></strong><span>。</span></p><p>&nbsp;</p><p><img src="https://cdn.nlark.com/yuque/0/2024/jpeg/40540759/1714910319230-fa763446-96b1-456b-a293-f7672b035a14.jpeg" alt="img" style="zoom: 67%;" /></p><p>&nbsp;</p><h1 id='3-tcp-套接字编程'><span>3. TCP 套接字编程</span></h1><p><span>与 UDP 不同，TCP 是一个</span><strong><span>面向连接</span></strong><span>的协议。这意味着客户和服务器能够开始互相发送数据前，他们先要握手和创建一个 </span><strong><span>TCP 连接</span></strong><span>。</span></p><p><span>TCP 连接的两端分别时客户端的套接字和服务端的套接字。使用 TCP 传输数据，只需经过其套接字将数据丢进 TCP 连接，不用再附上一个目的地址。</span></p><p>&nbsp;</p><p><img src="https://cdn.nlark.com/yuque/0/2024/png/40540759/1714912170694-2e9bab41-ac06-48d7-bb05-c17466c595ec.png" alt="img" style="zoom: 67%;" /></p><ol start='' ><li><p><span>服务器运行。</span></p></li><li><p><span>创建 welcome socket ，return 一个整数 。</span></p></li><li><p><span>整数，socket 与本地 IP 端口捆绑。调用 socket api 函数 </span><code>accept</code><span>，接收来自于这个 socket，来自于远端的另外以下进程跟他的握手关系，来自于其他人与它建立 tcp 连接</span></p></li><li><p><span>客户端与服务器连接，创建 socket，隐式捆绑。</span></p></li><li><p><span>调用</span><code>connect</code><span>函数。</span></p></li></ol></div></div>
 </body>
 </html>
 
