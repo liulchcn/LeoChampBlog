@@ -10,10 +10,6 @@ author:
  - LeoChamp
 ---
 
-
-
-# 应用层
-
 # 一、应用层
 
 ## [1.P2P应用](https://mp.weixin.qq.com/s?__biz=MzkyMDY3MjQ0OQ==&mid=2247483996&idx=1&sn=0ddf19db521c7de5c1940ffe7ee1eb5c&chksm=c18e03f2f6f98ae49353571eb1af6fe98e0b2099f74f5e4fd39dcb06f1cdcf52e24e18c7bfe1#rd)
